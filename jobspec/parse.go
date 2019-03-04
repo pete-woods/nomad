@@ -500,6 +500,7 @@ func parseVolumes(out *map[string]*api.Volume, list *ast.ObjectList) error {
 			return err
 		}
 
+		result.Name = n
 		result.Config = cfg
 
 		volumes[n] = &result
