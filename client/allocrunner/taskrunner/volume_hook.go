@@ -40,23 +40,24 @@ func (h *volumeHook) Prestart(ctx context.Context, req *interfaces.TaskPrestartR
 			return fmt.Errorf("Could not find volume declaration named: %s", m.Volume)
 		}
 
+		if volumeRequest.Type != "host" {
+			// We currently only handle host volumes in this hook, and other types
+			// should not get scheduled yet.
+			continue
+		}
+
 		hostVolume, ok := h.runner.clientConfig.Node.HostVolumes[volumeRequest.Name]
 		if !ok {
 			h.logger.Error("Failed to find host volume", "existing", h.runner.clientConfig.Node.HostVolumes, "requested", volumeRequest)
-			return fmt.Errorf("Could not find host volume declaration named: %s", m.Volume)
+			return fmt.Errorf("Could not find host volume named: %s", m.Volume)
 		}
 
-		// TODO: Validate mounts before now.
-		if volumeRequest.Type == "host" {
-			mcfg := &drivers.MountConfig{
-				HostPath: hostVolume.Source,
-				TaskPath: m.Destination,
-				Readonly: hostVolume.ReadOnly || volumeRequest.ReadOnly || m.ReadOnly,
-			}
-			mounts = append(mounts, mcfg)
-		} else {
-			return fmt.Errorf("Unsupported mount type: %s", volumeRequest.Type)
+		mcfg := &drivers.MountConfig{
+			HostPath: hostVolume.Source,
+			TaskPath: m.Destination,
+			Readonly: hostVolume.ReadOnly || volumeRequest.ReadOnly || m.ReadOnly,
 		}
+		mounts = append(mounts, mcfg)
 	}
 
 	h.runner.hookResources.setMounts(mounts)
