@@ -96,7 +96,12 @@
           "collection_interval": "5s",
           "data_points": 35
         }
-      ]
+      ],
+      "host_volume": {
+        "tmp": {
+          "source": "/tmp"
+        }
+      }
     }
   ],
   "consul": [
