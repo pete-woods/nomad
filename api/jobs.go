@@ -391,7 +391,6 @@ func DefaultUpdateStrategy() *UpdateStrategy {
 		MinHealthyTime:   timeToPtr(10 * time.Second),
 		HealthyDeadline:  timeToPtr(5 * time.Minute),
 		ProgressDeadline: timeToPtr(10 * time.Minute),
-		AutoRevert:       boolToPtr(false),
 		Canary:           intToPtr(0),
 	}
 }
@@ -513,10 +512,6 @@ func (u *UpdateStrategy) Canonicalize() {
 		u.MinHealthyTime = d.MinHealthyTime
 	}
 
-	if u.AutoRevert == nil {
-		u.AutoRevert = d.AutoRevert
-	}
-
 	if u.Canary == nil {
 		u.Canary = d.Canary
 	}
@@ -552,7 +547,11 @@ func (u *UpdateStrategy) Empty() bool {
 		return false
 	}
 
-	if u.AutoRevert != nil && *u.AutoRevert {
+	if u.AutoRevert != nil {
+		return false
+	}
+
+	if u.AutoPromote != nil {
 		return false
 	}
 
