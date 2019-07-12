@@ -652,6 +652,13 @@ func (d *Driver) containerBinds(task *drivers.TaskConfig, driverConfig *TaskConf
 	return binds, nil
 }
 
+var userMountToUnixMount = map[string]string{
+	"":              "private",
+	"private":       "private",
+	"host-to-task":  "rslave",
+	"bidirectional": "rshared",
+}
+
 func (d *Driver) createContainerConfig(task *drivers.TaskConfig, driverConfig *TaskConfig,
 	imageID string) (docker.CreateContainerOptions, error) {
 
@@ -846,6 +853,9 @@ func (d *Driver) createContainerConfig(task *drivers.TaskConfig, driverConfig *T
 			Target:   m.TaskPath,
 			Source:   m.HostPath,
 			ReadOnly: m.Readonly,
+			BindOptions: &docker.BindOptions{
+				Propagation: userMountToUnixMount[m.PropagationMode],
+			},
 		})
 	}
 

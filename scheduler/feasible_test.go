@@ -91,7 +91,7 @@ func TestHostVolumeChecker(t *testing.T) {
 		mock.Node(),
 		mock.Node(),
 	}
-	nodes[1].HostVolumes = map[string]*structs.ClientHostVolumeConfig{"foo": &structs.ClientHostVolumeConfig{Name: "foo", Type: "host"}}
+	nodes[1].HostVolumes = map[string]*structs.ClientHostVolumeConfig{"foo": &structs.ClientHostVolumeConfig{Name: "foo"}}
 	nodes[2].HostVolumes = map[string]*structs.ClientHostVolumeConfig{
 		"foo": &structs.ClientHostVolumeConfig{},
 		"bar": &structs.ClientHostVolumeConfig{},
