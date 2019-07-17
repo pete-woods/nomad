@@ -510,7 +510,6 @@ func (b *BlockedEvals) UnblockNode(nodeID string, index uint64) {
 		return
 	}
 
-	// QUESTION is it dangerous to delete this first?
 	for e := range evals {
 		b.system.Remove(e)
 		b.stats.TotalBlocked--
@@ -694,6 +693,7 @@ func (b *BlockedEvals) Flush() {
 	b.capacityChangeCh = make(chan *capacityUpdate, unblockBuffer)
 	b.stopCh = make(chan struct{})
 	b.duplicateCh = make(chan struct{}, 1)
+	b.system = newSystemEvals()
 }
 
 // Stats is used to query the state of the blocked eval tracker.
